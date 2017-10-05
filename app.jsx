@@ -34,12 +34,15 @@ class Model
   }
   addPlayer(name) 
   {
-    this.players.push(
+    if(name != "" && name != " ")
     {
-      name: name,
-      score: 0,
-      id: this.players.length + 1,
-    });
+      this.players.push(
+      {
+        name: name,
+        score: 0,
+        id: this.players.length + 1,
+      });
+    }
     this.inputValue = "";
     this.notify();
   }
@@ -109,22 +112,37 @@ class Stopwatch extends React.Component
     this.state = 
     {
       time: 0,
+      text: "Start",
     }
   }
   startTimer () 
   {
     this.timer = setInterval( () => 
     {
-      console.log(this.state.time);
-      this.setState(
-        {
-          time: this.state.time + 1,
-        });
+      this.setState((prevState) => ({
+        time: prevState.time + 1,
+      }));
     }, 1000);
+    this.setState(
+    {
+      text: "Stop",
+    });
   }
-    //componentWillUnmount
   stopTimer () 
   {
+    this.setState(
+    {
+      text: "Start",
+    });
+    clearInterval(this.timer);
+  }
+  resetTimer()
+  {
+    this.setState(
+    {
+      time: 0,
+      text: "Start",
+    });
     clearInterval(this.timer);
   }
   render()
@@ -133,7 +151,8 @@ class Stopwatch extends React.Component
       <div className="stopwatch">
         <h2>Stopwatch</h2>
         <h1 className="stopwatch-time">{this.state.time}</h1>
-        <button onClick={() => this.startTimer()}>Start</button><button onClick={() => this.stopTimer()}>Reset</button>
+        <button onClick={() => {(this.state.text == "Start")?this.startTimer():this.stopTimer()}}>{this.state.text}</button>
+        <button onClick={() => this.resetTimer()}>Reset</button>
       </div>
     );
   }
